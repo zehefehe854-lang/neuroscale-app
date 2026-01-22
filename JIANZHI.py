@@ -1,39 +1,39 @@
-import streamlit as st
-import requests
-import pandas as pd
-from PIL import Image
-from transformers import pipeline
-import time
+突耳
+导入 pandas 库作为 pd 。按键移动焦点。或者，使用
+从 PIL 导入 Image
+从变压器进口管道
+导入时间模块
+从变压器进口管道
 
-# ==========================================
-# 0. 全局配置与状态管理
-# ==========================================
+导入时间模块# 0. 全局配置与状态管理
+按键移动焦点，您的请求
+"🧬"
 st.set_page_config(
-    page_title="NeuroScale: 严谨代谢校准系统",
-    page_icon="🧬",
+很棒的
+换行模式load_vision_model():
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 
-# 使用缓存加载AI模型，避免每次刷新页面重新加载重型模型
+％的视觉变压器101 page_icon=you
 @st.cache_resource
-def load_vision_model():
+Hugging Face在你身边吗
     """
-    加载在Food-101数据集上微调的Vision Transformer模型。
-    使用Hugging Face的pipeline API进行封装。
-    """
-    try:
-        # 使用nateraw提供的微调模型，该模型在Food-101上表现优异
-        model_id = "nateraw/food"
-        classifier = pipeline("image-classification", model=model_id)
-        return classifier
-    except Exception as e:
-        st.error(f"模型加载失败: {e}")
-        return None
-
-
+#使用 nateraw you，#101-#
 # ==========================================
+GIF、JPEG、JPG、MOV、MP4、PNG、SVG、WEBM或 WEBP
+附加工资
+上传你的文件……
+我们不支持这种文件类型。"nateraw/food"
+再试一次退出("image-classification"然后
+编辑健志。
+移动到页面上的下一个交互元素。突耳
+再试一次附加文档需要对此存储库的写权限。作为
+使用
+
+
+控制+百万进口
 # 1. 核心算法模块：计算生理学引擎
 # ==========================================
 class MetabolicEngine:
@@ -233,7 +233,7 @@ def main():
 
         if img_file:
             # 布局：左图右数据
-            c_img, c_data = st.columns()
+            c_img, c_data = st.columns(2)
 
             with c_img:
                 # 【修复】这里之前有乱码
@@ -301,4 +301,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
