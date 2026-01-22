@@ -69,10 +69,20 @@ class MetabolicEngine:
         }
 
 # ==========================================
-# 2. 数据工程模块
+# 2. 数据工程模块 (重点修复)
 # ==========================================
 class DataGateway:
     SEARCH_URL = "https://world.openfoodfacts.org/cgi/search.pl"
+
+    # 【新增】防弹函数：不管来的是什么，必须变成数字
+    @staticmethod
+    def safe_float(val):
+        try:
+            if val is None:
+                return 0.0
+            return float(val)
+        except (ValueError, TypeError):
+            return 0.0
 
     @staticmethod
     def search_product(query_text):
@@ -97,13 +107,20 @@ class DataGateway:
             
             for p in products:
                 nutrients = p.get("nutriments", {})
+                # 只有当包含热量数据时才处理
                 if "energy-kcal_100g" in nutrients:
+                    # 使用 safe_float 强制转换所有数据
+                    kcal = DataGateway.safe_float(nutrients.get("energy-kcal_100g"))
+                    prot = DataGateway.safe_float(nutrients.get("proteins_100g"))
+                    carb = DataGateway.safe_float(nutrients.get("carbohydrates_100g"))
+                    fat = DataGateway.safe_float(nutrients.get("fat_100g"))
+
                     clean_results.append({
                         "name": p.get("product_name", "未知商品"),
-                        "kcal": nutrients.get("energy-kcal_100g", 0),
-                        "protein": nutrients.get("proteins_100g", 0),
-                        "carbs": nutrients.get("carbohydrates_100g", 0),
-                        "fat": nutrients.get("fat_100g", 0),
+                        "kcal": kcal,
+                        "protein": prot,
+                        "carbs": carb,
+                        "fat": fat,
                         "id": p.get("code")
                     })
             return clean_results
@@ -153,13 +170,13 @@ def main():
             c2.warning(f"碳水: {macros['Carbs']['g']}g")
             c3.error(f"脂肪: {macros['Fat']['g']}g")
 
-    # --- Tab 2 (修复重点) ---
+    # --- Tab 2 ---
     with tab_vision:
         st.subheader("智能食品识别")
         img_file = st.file_uploader("上传食物照片", type=['jpg', 'png', 'jpeg'])
         
         if img_file:
-            # 【修复点】这里强制指定分为2列，防止报错
+            # 这里保持双列布局
             c_img, c_data = st.columns(2)
             
             with c_img:
@@ -186,6 +203,7 @@ def main():
                             portion = st.number_input("份量 (g)", value=100, step=10)
                             ratio = portion / 100.0
                             
+                            # 即使数据是0.0，这里也不会报错了
                             result_df = pd.DataFrame({
                                 "营养素": ["热量", "蛋白质", "碳水", "脂肪"],
                                 "总量": [
